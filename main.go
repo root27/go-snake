@@ -10,10 +10,43 @@ import (
 	"github.com/nsf/termbox-go"
 )
 
+const (
+	WIDTH  = 100
+	HEIGHT = 30
+)
+
 type Point struct {
 	x int
 
 	y int
+}
+
+func drawWalls(xStart int, yStart int, width int, height int) {
+
+	termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
+
+	for xStart < width {
+
+		termbox.SetCell(xStart, 0, '-', termbox.ColorWhite, termbox.ColorDefault)
+
+		termbox.SetCell(xStart, height, '-', termbox.ColorWhite, termbox.ColorDefault)
+
+		xStart++
+
+	}
+
+	for yStart < height {
+
+		termbox.SetCell(0, yStart, '#', termbox.ColorWhite, termbox.ColorDefault)
+
+		termbox.SetCell(width, yStart, '#', termbox.ColorWhite, termbox.ColorDefault)
+
+		yStart++
+
+	}
+
+	termbox.Flush()
+
 }
 
 func main() {
@@ -40,8 +73,6 @@ func main() {
 
 	// Draw the snake
 
-	termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
-
 	for _, p := range snake {
 
 		termbox.SetCell(p.x, p.y, '0', termbox.ColorGreen, termbox.ColorDefault)
@@ -49,8 +80,6 @@ func main() {
 	}
 
 	termbox.SetCell(food.x, food.y, 'X', termbox.ColorRed, termbox.ColorDefault)
-
-	termbox.Flush()
 
 	// Set the game loop
 
@@ -101,13 +130,21 @@ func main() {
 
 		default:
 
-			termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
+			drawWalls(0, 0, WIDTH, HEIGHT)
 
 			// Move the snake
 
 			head := snake[0]
 
 			newHead := Point{head.x + dx, head.y + dy}
+
+			// Check if the snake has collided with the wall
+
+			if newHead.x <= 0 || newHead.x >= WIDTH || newHead.y <= 0 || newHead.y >= HEIGHT {
+
+				return
+
+			}
 
 			if newHead == food {
 
@@ -117,7 +154,7 @@ func main() {
 
 				// Generate new food
 
-				food = Point{rand.Intn(50), rand.Intn(20)}
+				food = Point{1 + rand.Intn(30), 1 + rand.Intn(20)}
 
 			} else {
 
@@ -129,7 +166,7 @@ func main() {
 
 			}
 
-			termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
+			drawWalls(0, 0, WIDTH, HEIGHT)
 
 			// Draw the snake
 
@@ -145,7 +182,7 @@ func main() {
 
 			termbox.Flush()
 
-			time.Sleep(100 * time.Millisecond)
+			time.Sleep(50 * time.Millisecond)
 
 		}
 
