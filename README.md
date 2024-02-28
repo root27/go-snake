@@ -10,7 +10,7 @@ go run main.go
 
 ```
 
-## GamePlay Video
+## Gameplay Video
 
-![asciicast](./out.gif)
+![Gameplay](./game.gif)
 
