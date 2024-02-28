@@ -3,6 +3,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"math/rand"
 	"time"
@@ -21,9 +22,23 @@ type Point struct {
 	y int
 }
 
+func printText(x int, y int, text string) {
+
+	for _, c := range text {
+
+		termbox.SetCell(x, y, c, termbox.ColorWhite, termbox.ColorDefault)
+
+		x++
+
+	}
+
+}
+
 func drawWalls(xStart int, yStart int, width int, height int) {
 
 	termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
+
+	printText(105, 10, "Snake Game")
 
 	for xStart < width {
 
@@ -70,6 +85,8 @@ func main() {
 	snake := []Point{{4, 4}, {4, 3}, {4, 2}}
 
 	food := Point{5, 5}
+
+	score := 0
 
 	// Draw the snake
 
@@ -132,6 +149,8 @@ func main() {
 
 			drawWalls(0, 0, WIDTH, HEIGHT)
 
+			printText(105, 15, fmt.Sprintf("Score: %d", score))
+
 			// Move the snake
 
 			head := snake[0]
@@ -142,6 +161,12 @@ func main() {
 
 			if newHead.x <= 0 || newHead.x >= WIDTH || newHead.y <= 0 || newHead.y >= HEIGHT {
 
+				printText(105, 20, "Game Over")
+
+				termbox.Flush()
+
+				time.Sleep(2 * time.Second)
+
 				return
 
 			}
@@ -151,6 +176,8 @@ func main() {
 				// Grow the snake
 
 				snake = append([]Point{newHead}, snake...)
+
+				score += 10
 
 				// Generate new food
 
@@ -166,7 +193,7 @@ func main() {
 
 			}
 
-			drawWalls(0, 0, WIDTH, HEIGHT)
+			// drawWalls(0, 0, WIDTH, HEIGHT, score)
 
 			// Draw the snake
 
